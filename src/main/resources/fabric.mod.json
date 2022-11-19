@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "craftfx",
+  "version": "${version}",
+
+  "name": "CraftFX",
+  "description": "A framework for building JavaFX tools on top of Minecraft and Fabric.",
+  "authors": [
+    "Igrium"
+  ],
+  "contact": {
+    "homepage": "http://igrium.com/",
+    "sources": "https://github.com/Sam54123/CraftFX"
+  },
+
+  "license": "MIT",
+  "icon": "assets/craftfx/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.example.ExampleMod"
+    ]
+  },
+  "mixins": [
+    "craftfx.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.14.9",
+    "fabric": "*",
+    "minecraft": "~1.19",
+    "java": ">=17"
+  },
+  "suggests": {
+  }
+}
