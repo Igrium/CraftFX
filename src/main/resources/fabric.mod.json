@@ -19,7 +19,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+    ],
+    "client": [
+      "com.igrium.craftfx.CraftFX",
+      "com.igrium.craftfx_test.CraftFXTest"
     ]
   },
   "mixins": [
