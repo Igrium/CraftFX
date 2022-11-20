@@ -24,6 +24,7 @@ public class EngineViewport extends Region implements EngineViewportHandle {
     public EngineViewport() {
         getChildren().add(imageView);
         imageView.setScaleY(-1);
+        setFocusTraversable(true);
     }
 
     @Override

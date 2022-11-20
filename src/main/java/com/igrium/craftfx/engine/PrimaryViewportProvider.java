@@ -88,7 +88,7 @@ public class PrimaryViewportProvider implements ViewportProvider {
     }
 
     @Override
-    public void setHandle(@Nullable EngineViewportHandle handle) {
+    public synchronized void setHandle(@Nullable EngineViewportHandle handle) {
         if (this.handle == handle) return;
         if (this.handle != null) this.handle.onRemoved(this);
 
