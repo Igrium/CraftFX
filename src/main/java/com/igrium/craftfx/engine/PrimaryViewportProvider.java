@@ -12,6 +12,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.client.util.Window;
 
 /**
  * Exports the main Minecraft window into an engine viewport.
@@ -65,6 +66,25 @@ public class PrimaryViewportProvider implements ViewportProvider {
         buffer.rewind();
 
         handle.update(buffer);
+    }
+
+    public synchronized void pretick() {
+        if (handle == null) return;
+        int x = handle.getDesiredWidth();
+        int y = handle.getDesiredHeight();
+
+        if (x <= 0 || y <= 0) return;
+
+        Framebuffer fb = client.getFramebuffer();
+        if (fb.viewportWidth != x || fb.viewportHeight != y) {
+            fb.resize(x, y, false);
+
+            Window window = client.getWindow();
+            window.setFramebufferWidth(x);
+            window.setFramebufferHeight(y);
+
+            client.gameRenderer.onResized(x, y);
+        }
     }
 
     @Override

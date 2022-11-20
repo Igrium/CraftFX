@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.igrium.craftfx.CraftFX;
+import com.igrium.craftfx.engine.PrimaryViewportProvider;
 
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -71,6 +72,7 @@ public final class ApplicationManager {
 
             stage.setOnHidden(e -> {
                 applications.remove(type);
+                PrimaryViewportProvider.getInstance().setHandle(null);
             });
 
             application.init(stage, root);
