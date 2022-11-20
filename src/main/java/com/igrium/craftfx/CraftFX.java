@@ -5,11 +5,15 @@ import org.apache.logging.log4j.Logger;
 
 import com.igrium.craftfx.application.ApplicationManager;
 import com.igrium.craftfx.engine.PrimaryViewportProvider;
+import com.igrium.craftfx.util.RenderUtils;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
+/**
+ * The primary mod initializer for CraftFX
+ */
 public class CraftFX implements ClientModInitializer {
 
     public static final Logger LOGGER = LogManager.getLogger();
@@ -17,6 +21,10 @@ public class CraftFX implements ClientModInitializer {
 
     private ApplicationManager applicationManager;
 
+    /**
+     * Get the active mod instance.
+     * @return Mod instance.
+     */
     public static CraftFX getInstance() {
         return instance;
     }
@@ -29,6 +37,8 @@ public class CraftFX implements ClientModInitializer {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             PrimaryViewportProvider.getInstance().pretick();
         });
+
+        WorldRenderEvents.AFTER_SETUP.register(RenderUtils::updateRenderContext);
 
         WorldRenderEvents.END.register(context -> {
             PrimaryViewportProvider.getInstance().update();
