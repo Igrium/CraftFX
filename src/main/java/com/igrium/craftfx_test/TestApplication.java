@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.igrium.craftfx.application.CraftApplication;
+import com.igrium.craftfx.viewport.PrimaryViewport;
 import com.igrium.craftfx.application.ApplicationType;
 
 import javafx.application.Application;
@@ -31,7 +32,10 @@ public class TestApplication extends CraftApplication {
         });
 
         StackPane root = new StackPane();
-        root.getChildren().add(btn);
+
+        PrimaryViewport viewport = new PrimaryViewport();
+        root.getChildren().addAll(viewport);
+
         primaryStage.setScene(new Scene(root, 640, 480));
         primaryStage.show();
     }
