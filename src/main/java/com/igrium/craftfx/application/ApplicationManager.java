@@ -71,6 +71,7 @@ public final class ApplicationManager {
             Stage stage = new Stage();
 
             stage.setOnHidden(e -> {
+                application.onClosed();
                 applications.remove(type);
                 PrimaryViewportProvider.getInstance().setHandle(null);
             });

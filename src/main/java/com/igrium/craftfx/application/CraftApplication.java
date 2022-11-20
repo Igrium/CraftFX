@@ -79,4 +79,9 @@ public abstract class CraftApplication {
     public void stop() {
         getStage().close();
     }
+
+    /**
+     * Called after this application has been closed.
+     */
+    public void onClosed() {}
 }
