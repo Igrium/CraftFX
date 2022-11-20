@@ -4,8 +4,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.igrium.craftfx.application.ApplicationManager;
+import com.igrium.craftfx.engine.PrimaryViewportProvider;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
 public class CraftFX implements ClientModInitializer {
 
@@ -22,6 +24,10 @@ public class CraftFX implements ClientModInitializer {
     public void onInitializeClient() {
         instance = this;
         applicationManager = new ApplicationManager(this);
+
+        WorldRenderEvents.END.register(context -> {
+            PrimaryViewportProvider.getInstance().update();
+        });
     }
     
     /**
