@@ -27,6 +27,8 @@ public class SimpleKeyboardMovementController extends InputController<PrimaryVie
     private double prevMouseX;
     private double prevMouseY;
 
+    private boolean isAltHeld;
+
     // So we don't capture robot moves
     private boolean ignoreMouse;
 
@@ -60,6 +62,7 @@ public class SimpleKeyboardMovementController extends InputController<PrimaryVie
             else if (e.getCode() == KeyCode.D) pressingRight = true;
             else if (e.getCode() == KeyCode.SHIFT) pressingSneak = true;
             else if (e.getCode() == KeyCode.SPACE) pressingJump = true;
+            else return;
 
             e.consume();
             updateKeyboard();
@@ -74,25 +77,36 @@ public class SimpleKeyboardMovementController extends InputController<PrimaryVie
             else if (e.getCode() == KeyCode.D) pressingRight = false;
             else if (e.getCode() == KeyCode.SHIFT) pressingSneak = false;
             else if (e.getCode() == KeyCode.SPACE) pressingJump = false;
-
+            else return;
             e.consume();
             updateKeyboard();
         });
 
         viewport.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
-            if (e.getButton() != MouseButton.SECONDARY) return;
+            if (e.getButton() != MouseButton.SECONDARY && !isAltHeld) return;
             setNavigating(true);
             e.consume();
         });
 
         viewport.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
-            if (e.getButton() != MouseButton.SECONDARY) return;
+            if (e.getButton() != MouseButton.SECONDARY && !isAltHeld) return;
             setNavigating(false);
             e.consume();
         });
 
         viewport.addEventHandler(MouseEvent.MOUSE_MOVED, this::handleMouseMove);
         viewport.addEventHandler(MouseEvent.MOUSE_DRAGGED, this::handleMouseMove);
+
+        viewport.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+            if (e.getCode() == KeyCode.ALT) isAltHeld = true;
+        });
+
+        viewport.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
+            if (e.getCode() == KeyCode.ALT) {
+                isAltHeld = false;
+                setNavigating(false);
+            }
+        });
     }
 
     public boolean isNavigating() {
