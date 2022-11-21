@@ -2,6 +2,8 @@ package com.igrium.craftfx.viewport;
 
 import java.io.Closeable;
 
+import javafx.scene.Scene;
+
 /**
  * Handles keystrokes on an engine viewport and translating them to the engine.
  */
@@ -15,7 +17,11 @@ public abstract class InputController<T extends EngineViewport> implements Close
 
     protected abstract void initListeners(T viewport);
 
-    public T getViewport() {
+    public final T getViewport() {
         return viewport;
+    }
+
+    public Scene getScene() {
+        return getViewport().getScene();
     }
 }

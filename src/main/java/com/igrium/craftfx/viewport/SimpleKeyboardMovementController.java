@@ -2,6 +2,7 @@ package com.igrium.craftfx.viewport;
 
 import com.igrium.craftfx.engine.MovementController;
 
+import javafx.scene.Cursor;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -35,6 +36,8 @@ public class SimpleKeyboardMovementController extends InputController<PrimaryVie
     protected MovementController controller;
     private boolean isNavigating;
     protected final Robot robot = new Robot();
+
+    private Cursor cursorCache = Cursor.DEFAULT;
 
     private MinecraftClient client;
 
@@ -115,7 +118,9 @@ public class SimpleKeyboardMovementController extends InputController<PrimaryVie
 
     public void setNavigating(boolean isNavigating) {
         this.isNavigating = isNavigating;
-        if (!isNavigating) {
+        if (isNavigating) {
+            getScene().setCursor(Cursor.NONE);
+        } else {
             pressingLeft = false;
             pressingRight = false;
             pressingForward = false;
@@ -125,6 +130,7 @@ public class SimpleKeyboardMovementController extends InputController<PrimaryVie
             updateKeyboard();
 
             ignoreMouse = true;
+            getScene().setCursor(cursorCache);
         }
     }
 
@@ -143,7 +149,7 @@ public class SimpleKeyboardMovementController extends InputController<PrimaryVie
         prevMouseX = event.getSceneX();
         prevMouseY = event.getSceneY();
 
-        Window window = getViewport().getScene().getWindow();
+        Window window = getScene().getWindow();
         double centerX = window.getX() + window.getWidth() / 2;
         double centerY = window.getY() + window.getHeight() / 2;
         
