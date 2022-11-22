@@ -81,8 +81,8 @@ public abstract class CraftApplication {
     }
 
     /**
-     * Called after this application has been closed.
+     * Called after this application has been closed. Called on the JavaFX thread.
      * @throws Exception If something goes wrong cleaning up.
      */
-    public void onClosed() throws Exception {}
+    protected void onClosed() throws Exception {}
 }

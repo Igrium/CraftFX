@@ -25,6 +25,8 @@ public final class ApplicationManager {
     private final CraftFX mod;
     private final Map<ApplicationType<?>, CraftApplication> applications = new HashMap<>();
 
+    private boolean pauseCache;
+
     public ApplicationManager(CraftFX mod) {
         this.mod = mod;
     }
@@ -62,8 +64,14 @@ public final class ApplicationManager {
             throw new IllegalStateException("Application "+type.getId()+" is already running!");
         }
 
-        CraftApplication application = type.create(MinecraftClient.getInstance());
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        CraftApplication application = type.create(client);
         applications.put(type, application);
+        
+        // Stop Minecraft from pausing
+        pauseCache = client.options.pauseOnLostFocus;
+        client.options.pauseOnLostFocus = false;
 
         RootApplication root = RootApplication.launchJFX();
         Platform.runLater(() -> {
@@ -75,6 +83,7 @@ public final class ApplicationManager {
                 } catch (Exception e1) {
                     CraftFX.LOGGER.error("Error closing application "+type.getId(), e);
                 }
+                client.options.pauseOnLostFocus = pauseCache;
                 applications.remove(type);
             });
 

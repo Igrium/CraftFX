@@ -22,7 +22,7 @@ public class KeyCodes {
      * @param javafx JavaFX code.
      * @return GLFW code, or {@code -1} if there is no GLFW equivalent.
      */
-    public static int toGlfw(KeyCode javafx) {
+    public static int toGLFW(KeyCode javafx) {
         Integer val = keyMap.get(javafx);
         if (val == null) return GLFW_KEY_UNKNOWN;
         return val;
