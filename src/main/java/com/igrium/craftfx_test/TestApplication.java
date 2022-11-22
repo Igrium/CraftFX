@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.igrium.craftfx.application.CraftApplication;
+import com.igrium.craftfx.engine.MovementHandler;
 import com.igrium.craftfx.util.RaycastUtils;
 import com.igrium.craftfx.viewport.PrimaryViewport;
 import com.igrium.craftfx.viewport.SimpleKeyboardMovementController;
@@ -25,7 +26,7 @@ public class TestApplication extends CraftApplication {
 
     private final Logger LOGGER = LogManager.getLogger();
     private PrimaryViewport viewport;
-    private SimpleKeyboardMovementController controller;
+    private SimpleKeyboardMovementController<PrimaryViewport> controller;
 
     public TestApplication(ApplicationType<?> type, MinecraftClient client) {
         super(type, client);
@@ -44,10 +45,9 @@ public class TestApplication extends CraftApplication {
 
         viewport = new PrimaryViewport();
         root.getChildren().addAll(viewport);
-        
-        // viewport.addEventHandler(MouseEvent.MOUSE_CLICKED, this::onClick);
-
-        controller = new SimpleKeyboardMovementController(viewport);
+                
+        MovementHandler movementHandler = SimpleKeyboardMovementController.setupMovementHandler();
+        controller = new SimpleKeyboardMovementController<>(viewport, movementHandler);
 
         primaryStage.setScene(new Scene(root, 640, 480));
         primaryStage.show();

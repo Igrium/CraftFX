@@ -6,7 +6,7 @@ import net.minecraft.client.option.GameOptions;
 /**
  * A re-implementation of <code>KeyboardInput</code> that allows for manual overriding in code.
  */
-public class MovementController extends KeyboardInput {
+public class ManualKeyboardInput extends KeyboardInput {
 
     private boolean ignoreNative = false;
 
@@ -48,7 +48,7 @@ public class MovementController extends KeyboardInput {
         return ignoreNative;
     }
 
-    public MovementController(GameOptions settings) {
+    public ManualKeyboardInput(GameOptions settings) {
         super(settings);
     }
 

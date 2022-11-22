@@ -1,6 +1,8 @@
 package com.igrium.craftfx.viewport;
 
-import com.igrium.craftfx.engine.MovementController;
+import com.igrium.craftfx.engine.ManualKeyboardInput;
+import com.igrium.craftfx.engine.MovementHandler;
+import com.igrium.craftfx.engine.PlayerMovementHandler;
 
 import javafx.scene.Cursor;
 import javafx.scene.input.KeyCode;
@@ -10,13 +12,15 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.robot.Robot;
 import javafx.stage.Window;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.Entity;
 
 /**
  * A simple movement controller for the primary viewport. This uses Minecraft's
  * default movement mechanics, making it compatible with servers, but fairly
  * limited in capability.
  */
-public class SimpleKeyboardMovementController extends InputController<PrimaryViewport> {
+public class SimpleKeyboardMovementController<T extends EngineViewport> extends InputController<T, MovementHandler> {
 
     private boolean pressingForward;
     private boolean pressingBack;
@@ -33,29 +37,17 @@ public class SimpleKeyboardMovementController extends InputController<PrimaryVie
     // So we don't capture robot moves
     private boolean ignoreMouse;
 
-    protected MovementController controller;
     private boolean isNavigating;
     protected final Robot robot = new Robot();
 
     private Cursor cursorCache = Cursor.DEFAULT;
 
-    private MinecraftClient client;
-
-    public SimpleKeyboardMovementController(PrimaryViewport viewport) {
-        super(viewport);
-        initGame();
-    }
-
-    protected void initGame() {
-        client = MinecraftClient.getInstance();
-        client.execute(() -> {
-            controller = new MovementController(client.options);
-            client.player.input = controller;
-        });
+    public SimpleKeyboardMovementController(T viewport, MovementHandler movementHandler) {
+        super(viewport, movementHandler);
     }
 
     @Override
-    protected void initListeners(PrimaryViewport viewport) {
+    protected void initListeners(T viewport) {
         viewport.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
             if (!isNavigating) return;
 
@@ -156,7 +148,7 @@ public class SimpleKeyboardMovementController extends InputController<PrimaryVie
         ignoreMouse = true;
         robot.mouseMove(centerX, centerY);
 
-        client.player.changeLookDirection(dx, dy);
+        movementHandler.changeLookDirection(dx, dy);
         event.consume();
     }
 
@@ -168,14 +160,36 @@ public class SimpleKeyboardMovementController extends InputController<PrimaryVie
     }
 
     protected void updateKeyboard() {
-        controller.setForwardAmount(getMovementMultiplier(pressingForward, pressingBack));
-        controller.setSidewaysAmount(getMovementMultiplier(pressingLeft, pressingRight));
-        controller.setJumping(pressingJump);
-        controller.setSneaking(pressingSneak);
+        movementHandler.setForwardAmount(getMovementMultiplier(pressingForward, pressingBack));
+        movementHandler.setSidewaysAmount(getMovementMultiplier(pressingLeft, pressingRight));
+        movementHandler.setJumping(pressingJump);
+        movementHandler.setSneaking(pressingSneak);
     }
 
     @Override
     public void close() {
-        controller.setIgnoreNative(false);
+    }
+
+    /**
+     * Setup a player movement handler for the local player.
+     * @return The movement handler.
+     * @throws IllegalStateException If the camera entity is not a player.
+     */
+    public static PlayerMovementHandler setupMovementHandler() throws IllegalStateException {
+        MinecraftClient client = MinecraftClient.getInstance();
+        Entity camera = client.getCameraEntity();
+        if (!(camera instanceof ClientPlayerEntity)) {
+            throw new IllegalStateException("Camera entity must be a player!");
+        }
+
+        ClientPlayerEntity player = (ClientPlayerEntity) camera;
+        ManualKeyboardInput input = new ManualKeyboardInput(client.options);
+        PlayerMovementHandler handler = new PlayerMovementHandler(player, input);
+
+        client.execute(() -> {
+            player.input = input;
+        });
+
+        return handler;
     }
 }
