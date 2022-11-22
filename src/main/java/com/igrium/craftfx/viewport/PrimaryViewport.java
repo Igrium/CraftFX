@@ -17,9 +17,10 @@ public class PrimaryViewport extends EngineViewport {
         PrimaryViewportProvider provider = PrimaryViewportProvider.getInstance();
 
         if (visible) {
-            provider.setHandle(this);
-        } else if (provider.getHandle() == this) {
-            provider.setHandle(null);
+            setViewportProvider(provider);
+            provider.setCustomResolution(true);
+        } else {
+            setViewportProvider(null);
         }
     }
 }

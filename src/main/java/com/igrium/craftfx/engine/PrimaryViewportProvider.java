@@ -1,8 +1,10 @@
 package com.igrium.craftfx.engine;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.system.MemoryUtil;
@@ -32,12 +34,27 @@ public class PrimaryViewportProvider implements ViewportProvider {
     private int currentY;
     private ByteBuffer buffer;
 
-    protected EngineViewportHandle handle;
+    private boolean needsCleanup;
+
+    private boolean customResolution = true;
+
+    // protected EngineViewportHandle handle;
+    protected final List<EngineViewportHandle> handles = new ArrayList<>();
     MinecraftClient client = MinecraftClient.getInstance();
+
+    @Override
+    public synchronized void addHandle(EngineViewportHandle handle) {
+        handles.add(handle);
+    }
+
+    @Override
+    public synchronized boolean removeHandle(EngineViewportHandle handle) {
+        return handles.remove(handle);
+    }
 
     public synchronized void update() {
         RenderSystem.assertOnRenderThread();
-        if (handle == null) {
+        if (handles.isEmpty()) {
             if (buffer != null) {
                 MemoryUtil.memFree(buffer);
                 buffer = null;
@@ -58,25 +75,32 @@ public class PrimaryViewportProvider implements ViewportProvider {
             currentY = y;
             buffer = MemoryUtil.memAlloc(x * y  * 4);
 
-            handle.onAllocate(buffer, x, y);
+            handles.forEach(handle -> handle.onAllocate(buffer, x, y));
         }
 
         RenderSystem.bindTexture(frameBuffer.getColorAttachment());
         RenderSystem.readPixels(0, 0, x, y, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, buffer);
         buffer.rewind();
 
-        handle.update(buffer);
+        handles.forEach(handle -> handle.update(buffer));
     }
 
     public synchronized void pretick() {
-        if (handle == null) return;
-        int x = handle.getDesiredWidth();
-        int y = handle.getDesiredHeight();
+        if (handles.isEmpty()) {
+            if (needsCleanup) {
+                resetFramebuffer();
+                needsCleanup = false;
+            }
+            return;
+        };
+
+        int x = handles.get(0).getDesiredWidth();
+        int y = handles.get(0).getDesiredHeight();
 
         if (x <= 0 || y <= 0) return;
 
         Framebuffer fb = client.getFramebuffer();
-        if (fb.viewportWidth != x || fb.viewportHeight != y) {
+        if (customResolution && (fb.viewportWidth != x || fb.viewportHeight != y)) {
             fb.resize(x, y, false);
 
             Window window = client.getWindow();
@@ -85,24 +109,39 @@ public class PrimaryViewportProvider implements ViewportProvider {
 
             client.gameRenderer.onResized(x, y);
         }
+        needsCleanup = true;
     }
 
-    @Override
-    public synchronized void setHandle(@Nullable EngineViewportHandle handle) {
-        if (this.handle == handle) return;
-        if (this.handle != null) this.handle.onRemoved(this);
-
-        this.handle = handle;
-        if (handle != null) handle.onSet(this);
+    /**
+     * Whether the primary viewport provider is allowed update the resolution of the
+     * framebuffer.
+     */
+    public void setCustomResolution(boolean customResolution) {
+        this.customResolution = customResolution;
     }
 
-    @Override
-    public @Nullable EngineViewportHandle getHandle() {
-        return handle;
+    /**
+     * Whether the primary viewport provider is allowed update the resolution of the
+     * framebuffer.
+     */
+    public boolean useCustomResolution() {
+        return customResolution;
+    }
+
+    protected void resetFramebuffer() {
+        Window window = client.getWindow();
+        int[] width = new int[1];
+        int[] height = new int[1];
+        GLFW.glfwGetFramebufferSize(window.getHandle(), width, height);
+
+        window.setFramebufferWidth(width[0]);
+        window.setFramebufferHeight(height[0]);
+
+        client.onResolutionChanged();
     }
 
     @Override
     public boolean isActive() {
-        return handle != null;
+        return !handles.isEmpty();
     }
 }

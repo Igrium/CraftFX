@@ -11,7 +11,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
@@ -25,14 +24,26 @@ public final class ApplicationCommand {
     private static DynamicCommandExceptionType NOT_FOUND = new DynamicCommandExceptionType(
             id -> Text.literal("No application of type " + id + " exists!"));
     
-    private static SimpleCommandExceptionType ERROR = new SimpleCommandExceptionType(
-            Text.of("Error launching application. See console for details."));
+    private static DynamicCommandExceptionType ERROR = new DynamicCommandExceptionType(
+            error -> Text.of("Error launching application: "+error));
 
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
         dispatcher.register(literal("application").then(
             literal("start").then(
                 argument("id", IdentifierArgumentType.identifier()).executes(ApplicationCommand::applicationStart)
             )
+        ));
+
+        dispatcher.register(literal("craftfx").then(
+            literal("test").executes(context -> {
+                try {
+                    ApplicationManager.getInstance().launch(CraftFXTest.TEST_APPLICATION);
+                } catch (Exception e) {
+                    LogManager.getLogger().error("Error loading application.", e);
+                    throw ERROR.create(e.getMessage());
+                }
+                return 1;
+            })
         ));
     }
 
@@ -47,7 +58,7 @@ public final class ApplicationCommand {
             ApplicationManager.getInstance().launch(type);
         } catch (Exception e) {
             LogManager.getLogger().error("Error loading application.", e);
-            throw ERROR.create();
+            throw ERROR.create(e.getMessage());
         }
 
         return 1;

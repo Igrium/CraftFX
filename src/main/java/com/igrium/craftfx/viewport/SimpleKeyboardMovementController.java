@@ -166,10 +166,6 @@ public class SimpleKeyboardMovementController<T extends EngineViewport> extends 
         movementHandler.setSneaking(pressingSneak);
     }
 
-    @Override
-    public void close() {
-    }
-
     /**
      * Setup a player movement handler for the local player.
      * @return The movement handler.
@@ -191,5 +187,10 @@ public class SimpleKeyboardMovementController<T extends EngineViewport> extends 
         });
 
         return handler;
+    }
+
+    @Override
+    public void close() {
+        
     }
 }

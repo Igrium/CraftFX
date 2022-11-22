@@ -2,8 +2,6 @@ package com.igrium.craftfx.viewport;
 
 import java.nio.ByteBuffer;
 
-import com.igrium.craftfx.engine.ViewportProvider;
-
 /**
  * A handle allowing JavaFX to recieve render events from the Minecraft engine.
  */
@@ -25,16 +23,4 @@ public interface EngineViewportHandle {
 
     public int getDesiredWidth();
     public int getDesiredHeight();
-
-    /**
-     * Called when this handle is added to a viewport provider.
-     * @param provider The viewport provider.
-     */
-    public default void onSet(ViewportProvider provider) {}
-
-    /**
-     * Called when this handle is removed from a viewport provider.
-     * @param provider The viewport provider.
-     */
-    public default void onRemoved(ViewportProvider provider) {};
 }

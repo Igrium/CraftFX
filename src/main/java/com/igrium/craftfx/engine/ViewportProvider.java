@@ -1,25 +1,33 @@
 package com.igrium.craftfx.engine;
 
-import org.jetbrains.annotations.Nullable;
-
 import com.igrium.craftfx.viewport.EngineViewportHandle;
 
 /**
- * Provides a viewport into the Minecraft engine which can be rendered to a viewport handle.
+ * <p>
+ * Provides a viewport into the Minecraft engine which can be rendered to a
+ * viewport handle.
+ * </p>
+ * <p>
+ * Each viewport provider can have multiple handles attached, but it can only
+ * obtain the desired resolution from one. If there is more than handle, the
+ * handle chosen for the resolution is undefined (although persistent across
+ * frames)
+ * </p>
  */
 public interface ViewportProvider {
-    /**
-     * Set the viewport handle being rendered to.
-     * @param handle New viewport handle.
-     */
-    public void setHandle(@Nullable EngineViewportHandle handle);
 
     /**
-     * Get the current viewport handle.
-     * @return Current viewport handle.
+     * Add a handle to this viewport provider.
+     * @param handle The handle.
      */
-    @Nullable
-    public EngineViewportHandle getHandle();
+    public void addHandle(EngineViewportHandle handle);
+
+    /**
+     * Remove a handle from this viewport provider.
+     * @param handle The handle.
+     * @return If the handle was found.
+     */
+    public boolean removeHandle(EngineViewportHandle handle);
 
     /**
      * Whether this provider is currently active.

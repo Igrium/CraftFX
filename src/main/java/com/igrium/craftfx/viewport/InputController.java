@@ -1,7 +1,5 @@
 package com.igrium.craftfx.viewport;
 
-import java.io.Closeable;
-
 import com.igrium.craftfx.engine.MovementHandler;
 
 import javafx.scene.Scene;
@@ -9,7 +7,7 @@ import javafx.scene.Scene;
 /**
  * Handles keystrokes on an engine viewport and translating them to the engine.
  */
-public abstract class InputController<T extends EngineViewport, M extends MovementHandler> implements Closeable {
+public abstract class InputController<T extends EngineViewport, M extends MovementHandler> implements AutoCloseable {
     protected final T viewport;
     protected final M movementHandler;
 

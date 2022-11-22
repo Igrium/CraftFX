@@ -82,6 +82,7 @@ public abstract class CraftApplication {
 
     /**
      * Called after this application has been closed.
+     * @throws Exception If something goes wrong cleaning up.
      */
-    public void onClosed() {}
+    public void onClosed() throws Exception {}
 }

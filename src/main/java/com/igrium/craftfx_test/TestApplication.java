@@ -49,7 +49,7 @@ public class TestApplication extends CraftApplication {
         MovementHandler movementHandler = SimpleKeyboardMovementController.setupMovementHandler();
         controller = new SimpleKeyboardMovementController<>(viewport, movementHandler);
 
-        primaryStage.setScene(new Scene(root, 640, 480));
+        primaryStage.setScene(new Scene(root, 1280, 720));
         primaryStage.show();
     }
 
@@ -78,6 +78,7 @@ public class TestApplication extends CraftApplication {
 
     @Override
     public void onClosed() {
+        viewport.close();
         controller.close();
     }
     

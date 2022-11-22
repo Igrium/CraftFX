@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.igrium.craftfx.CraftFX;
-import com.igrium.craftfx.engine.PrimaryViewportProvider;
 
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -71,9 +70,12 @@ public final class ApplicationManager {
             Stage stage = new Stage();
 
             stage.setOnHidden(e -> {
-                application.onClosed();
+                try {
+                    application.onClosed();
+                } catch (Exception e1) {
+                    CraftFX.LOGGER.error("Error closing application "+type.getId(), e);
+                }
                 applications.remove(type);
-                PrimaryViewportProvider.getInstance().setHandle(null);
             });
 
             application.init(stage, root);
