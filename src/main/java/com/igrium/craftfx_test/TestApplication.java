@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.igrium.craftfx.application.CraftApplication;
 import com.igrium.craftfx.engine.MovementHandler;
+import com.igrium.craftfx.image.TextureView;
 import com.igrium.craftfx.util.RaycastUtils;
 import com.igrium.craftfx.viewport.PrimaryViewport;
 import com.igrium.craftfx.viewport.SimpleKeyboardMovementController;
@@ -19,6 +20,7 @@ import javafx.stage.Stage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.TntEntity;
 import net.minecraft.server.integrated.IntegratedServer;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
@@ -44,11 +46,17 @@ public class TestApplication extends CraftApplication {
         StackPane root = new StackPane();
 
         viewport = new PrimaryViewport();
-        root.getChildren().addAll(viewport);
+        root.getChildren().add(viewport);
                 
         MovementHandler movementHandler = SimpleKeyboardMovementController.setupMovementHandler();
         controller = new SimpleKeyboardMovementController<>(viewport, movementHandler);
 
+        TextureView texture = new TextureView(new Identifier("textures/entity/zombie/zombie.png"));
+
+        // texture.setFitWidth(512);
+        texture.setPreserveRatio(true);
+        texture.setSmooth(false);
+        root.getChildren().add(texture);
         primaryStage.setScene(new Scene(root, 1280, 720));
         primaryStage.show();
     }
