@@ -7,12 +7,10 @@ import java.util.List;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-import org.lwjgl.system.MemoryUtil;
 
 import com.igrium.craftfx.viewport.EngineViewportHandle;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import javafx.application.Platform;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.util.Window;
@@ -36,7 +34,6 @@ public class PrimaryViewportProvider implements ViewportProvider {
     private ByteBuffer buffer;
 
     private boolean needsCleanup;
-
     private boolean customResolution = true;
 
     // protected EngineViewportHandle handle;
@@ -56,10 +53,7 @@ public class PrimaryViewportProvider implements ViewportProvider {
     public synchronized void update() {
         RenderSystem.assertOnRenderThread();
         if (handles.isEmpty()) {
-            if (buffer != null) {
-                clearBuffer(buffer);
-                buffer = null;
-            }
+            buffer = null;
             return;
         };
 
@@ -68,14 +62,12 @@ public class PrimaryViewportProvider implements ViewportProvider {
         
         // Reallocate
         if (buffer == null || x != currentX || y != currentY) {
-            if (buffer != null) {
-                clearBuffer(buffer);
-            }
-
             currentX = x;
             currentY = y;
-            buffer = MemoryUtil.memAlloc(x * y  * 4);
 
+            // We don't know when JavaFX will be done with this,
+            // so we need to let the GC handle de-allocation (no MemoryUtil)
+            buffer = ByteBuffer.allocateDirect(x * y * 4);
             handles.forEach(handle -> handle.onAllocate(buffer, x, y));
         }
 
@@ -84,11 +76,7 @@ public class PrimaryViewportProvider implements ViewportProvider {
         buffer.rewind();
 
         handles.forEach(handle -> handle.update(buffer));
-    }
-
-    // Buffers are cleared on the JavaFX thread so we don't pull them out from under the JavaFX renderer.
-    private void clearBuffer(ByteBuffer ptr) {
-        Platform.runLater(() -> MemoryUtil.memFree(ptr));
+        
     }
 
     public synchronized void pretick() {
