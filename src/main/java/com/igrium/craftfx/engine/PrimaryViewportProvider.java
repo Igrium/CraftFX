@@ -12,6 +12,7 @@ import org.lwjgl.system.MemoryUtil;
 import com.igrium.craftfx.viewport.EngineViewportHandle;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import javafx.application.Platform;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.util.Window;
@@ -56,7 +57,7 @@ public class PrimaryViewportProvider implements ViewportProvider {
         RenderSystem.assertOnRenderThread();
         if (handles.isEmpty()) {
             if (buffer != null) {
-                MemoryUtil.memFree(buffer);
+                clearBuffer(buffer);
                 buffer = null;
             }
             return;
@@ -68,7 +69,7 @@ public class PrimaryViewportProvider implements ViewportProvider {
         // Reallocate
         if (buffer == null || x != currentX || y != currentY) {
             if (buffer != null) {
-                MemoryUtil.memFree(buffer);
+                clearBuffer(buffer);
             }
 
             currentX = x;
@@ -83,6 +84,11 @@ public class PrimaryViewportProvider implements ViewportProvider {
         buffer.rewind();
 
         handles.forEach(handle -> handle.update(buffer));
+    }
+
+    // Buffers are cleared on the JavaFX thread so we don't pull them out from under the JavaFX renderer.
+    private void clearBuffer(ByteBuffer ptr) {
+        Platform.runLater(() -> MemoryUtil.memFree(ptr));
     }
 
     public synchronized void pretick() {
