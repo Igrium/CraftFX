@@ -35,11 +35,24 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    api(include("org.openjfx:javafx-base:${project.javaFX_version}:${platform}"))
-    api(include("org.openjfx:javafx-controls:${project.javaFX_version}:${platform}"))
-    api(include("org.openjfx:javafx-graphics:${project.javaFX_version}:${platform}"))
-    api(include("org.openjfx:javafx-fxml:${project.javaFX_version}:${platform}"))
-    api(include("org.openjfx:javafx-web:${project.javaFX_version}:${platform}"))
+    // Make sure native dependencies aren't included with publish
+    // TODO: clean this up
+    def taskNames = gradle.getStartParameter().getTaskNames()
+    if ( taskNames.stream().anyMatch({ t -> t.startsWith('pub') })) 
+    {
+        compileOnly "org.openjfx:javafx-base:${project.javaFX_version}:${platform}"
+        compileOnly "org.openjfx:javafx-controls:${project.javaFX_version}:${platform}"
+        compileOnly "org.openjfx:javafx-graphics:${project.javaFX_version}:${platform}"
+        compileOnly "org.openjfx:javafx-fxml:${project.javaFX_version}:${platform}"
+        compileOnly "org.openjfx:javafx-web:${project.javaFX_version}:${platform}"
+    } else {
+        implementation(include("org.openjfx:javafx-base:${project.javaFX_version}:${platform}"))
+        implementation(include("org.openjfx:javafx-controls:${project.javaFX_version}:${platform}"))
+        implementation(include("org.openjfx:javafx-graphics:${project.javaFX_version}:${platform}"))
+        implementation(include("org.openjfx:javafx-fxml:${project.javaFX_version}:${platform}"))
+        implementation(include("org.openjfx:javafx-web:${project.javaFX_version}:${platform}"))
+    }
+    
 }
 
 processResources {
