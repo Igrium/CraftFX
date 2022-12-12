@@ -209,9 +209,4 @@ public class SimpleKeyboardInputController<T extends EngineViewport> extends Inp
     public void tick(long delta) {
         
     }
-
-    @Override
-    public void close() {
-        
-    }
 }

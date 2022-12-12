@@ -6,8 +6,10 @@ import org.apache.logging.log4j.Logger;
 import com.igrium.craftfx.application.CraftApplication;
 import com.igrium.craftfx.image.TextureView;
 import com.igrium.craftfx.util.RaycastUtils;
+import com.igrium.craftfx.viewport.InputController;
 import com.igrium.craftfx.viewport.PrimaryViewport;
 import com.igrium.craftfx.viewport.SimpleKeyboardInputController;
+import com.igrium.craftfx.viewport.StandardInputController;
 import com.igrium.craftfx.application.ApplicationType;
 
 import javafx.application.Application;
@@ -27,7 +29,7 @@ public class TestApplication extends CraftApplication {
 
     private final Logger LOGGER = LogManager.getLogger();
     private PrimaryViewport viewport;
-    private SimpleKeyboardInputController<PrimaryViewport> controller;
+    private InputController<PrimaryViewport, ?> controller;
 
     public TestApplication(ApplicationType<?> type, MinecraftClient client) {
         super(type, client);
@@ -47,7 +49,7 @@ public class TestApplication extends CraftApplication {
         viewport = new PrimaryViewport();
         root.getChildren().add(viewport);
                 
-        controller = new SimpleKeyboardInputController<>(viewport);
+        controller = new StandardInputController<>(viewport);
 
         TextureView texture = new TextureView(new Identifier("textures/entity/zombie/zombie.png"));
 

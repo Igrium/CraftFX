@@ -15,6 +15,7 @@ public abstract class InputController<T extends EngineViewport, M extends Moveme
         this.viewport = viewport;
         this.movementHandler = movementHandler;
         initListeners(viewport);
+        movementHandler.setController(this);
     }
 
     /**
@@ -39,5 +40,10 @@ public abstract class InputController<T extends EngineViewport, M extends Moveme
 
     public Scene getScene() {
         return getViewport().getScene();
+    }
+
+    @Override
+    public void close() {
+        movementHandler.setController(null);
     }
 }
