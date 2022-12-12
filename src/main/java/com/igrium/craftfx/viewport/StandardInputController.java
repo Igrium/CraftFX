@@ -34,6 +34,7 @@ public class StandardInputController<T extends EngineViewport> extends InputCont
     private double prevMouseY;
 
     private boolean isAltHeld;
+    
 
     /**
      * Spawn a standard input controller.

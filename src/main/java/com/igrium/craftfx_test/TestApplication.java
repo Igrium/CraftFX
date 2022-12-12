@@ -8,7 +8,6 @@ import com.igrium.craftfx.image.TextureView;
 import com.igrium.craftfx.util.RaycastUtils;
 import com.igrium.craftfx.viewport.InputController;
 import com.igrium.craftfx.viewport.PrimaryViewport;
-import com.igrium.craftfx.viewport.SimpleKeyboardInputController;
 import com.igrium.craftfx.viewport.StandardInputController;
 import com.igrium.craftfx.application.ApplicationType;
 

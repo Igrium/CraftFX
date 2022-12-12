@@ -1,9 +1,5 @@
 package com.igrium.craftfx.engine;
 
-import org.jetbrains.annotations.Nullable;
-
-import com.igrium.craftfx.viewport.InputController;
-
 import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.GameOptions;
@@ -22,8 +18,6 @@ public class PlayerMovementHandler extends KeyboardInput implements MovementHand
     private boolean isJumping;
     private boolean isSneaking;
 
-    @Nullable
-    private InputController<?, ?> controller;
     /**
      * Create a player movement handler.
      * @param player The player to use.
@@ -106,13 +100,6 @@ public class PlayerMovementHandler extends KeyboardInput implements MovementHand
     }
 
     @Override
-    public void setController(@Nullable InputController<?, ?> controller) {
-        this.controller = controller;
-    }
-
-    private long lastTick = System.currentTimeMillis();
-
-    @Override
     public void tick(boolean slowDown, float f) {
         if (!ignoreNative) {
             super.tick(slowDown, f);
@@ -126,15 +113,6 @@ public class PlayerMovementHandler extends KeyboardInput implements MovementHand
 
         this.jumping = isJumping || (!ignoreNative && jumping);
         this.sneaking = isSneaking || (!ignoreNative && sneaking);
-
-        // Tick controller
-        long now = System.currentTimeMillis();
-        
-        if (controller != null && now - lastTick != 0) { // To avoid devide by zero errors
-            controller.tick(now - lastTick);
-        }
-
-        lastTick = now;
     }
 
     private float clamp(float val) {

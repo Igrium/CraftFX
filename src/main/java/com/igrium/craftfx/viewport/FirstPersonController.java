@@ -2,6 +2,7 @@ package com.igrium.craftfx.viewport;
 
 import java.util.function.Supplier;
 
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 /**
@@ -105,8 +106,8 @@ public class FirstPersonController {
      */
     public Vec3d getMovementVector(long delta) {
         Vec3d vec = new Vec3d(getLeftAmount(), getUpAmount(), getForwardAmount());
-        vec = vec.rotateX(pitchSupplier.get());
-        vec = vec.rotateY(yawSupplier.get());
+        vec = vec.rotateX(-pitchSupplier.get() * MathHelper.RADIANS_PER_DEGREE);
+        vec = vec.rotateY(-yawSupplier.get() * MathHelper.RADIANS_PER_DEGREE);
 
         double deltaSeconds = delta / 1000d;
         double distance = deltaSeconds * speed;
