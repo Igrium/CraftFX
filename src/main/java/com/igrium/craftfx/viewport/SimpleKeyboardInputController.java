@@ -1,6 +1,5 @@
 package com.igrium.craftfx.viewport;
 
-import com.igrium.craftfx.engine.ManualKeyboardInput;
 import com.igrium.craftfx.engine.MovementHandler;
 import com.igrium.craftfx.engine.PlayerMovementHandler;
 
@@ -20,7 +19,7 @@ import net.minecraft.entity.Entity;
  * default movement mechanics, making it compatible with servers, but fairly
  * limited in capability.
  */
-public class SimpleKeyboardMovementController<T extends EngineViewport> extends InputController<T, MovementHandler> {
+public class SimpleKeyboardInputController<T extends EngineViewport> extends InputController<T, MovementHandler> {
 
     private boolean pressingForward;
     private boolean pressingBack;
@@ -42,9 +41,23 @@ public class SimpleKeyboardMovementController<T extends EngineViewport> extends 
 
     private Cursor cursorCache = Cursor.DEFAULT;
 
-    public SimpleKeyboardMovementController(T viewport, MovementHandler movementHandler) {
+    /**
+     * Spawn a simple keyboard input controller.
+     * @param viewport The viewport to use.
+     * @param movementHandler The movement handler to use.
+     */
+    public SimpleKeyboardInputController(T viewport, MovementHandler movementHandler) {
         super(viewport, movementHandler);
     }
+
+    /**
+     * Spawn a simple keyboard input controller using a default player movement handler.
+     * @param viewport The viewport to use.
+     */
+    public SimpleKeyboardInputController(T viewport) {
+        this(viewport, setupMovementHandler());
+    }
+    
 
     @Override
     protected void initListeners(T viewport) {
@@ -177,16 +190,24 @@ public class SimpleKeyboardMovementController<T extends EngineViewport> extends 
         if (!(camera instanceof ClientPlayerEntity)) {
             throw new IllegalStateException("Camera entity must be a player!");
         }
-
         ClientPlayerEntity player = (ClientPlayerEntity) camera;
-        ManualKeyboardInput input = new ManualKeyboardInput(client.options);
-        PlayerMovementHandler handler = new PlayerMovementHandler(player, input);
+
+        if (player.input instanceof PlayerMovementHandler) {
+            return (PlayerMovementHandler) player.input;
+        }
+
+        PlayerMovementHandler handler = new PlayerMovementHandler(player, client.options);
 
         client.execute(() -> {
-            player.input = input;
+            player.input = handler;
         });
 
         return handler;
+    }
+
+    @Override
+    public void tick(long delta) {
+        
     }
 
     @Override

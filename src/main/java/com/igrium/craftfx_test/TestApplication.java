@@ -4,11 +4,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.igrium.craftfx.application.CraftApplication;
-import com.igrium.craftfx.engine.MovementHandler;
 import com.igrium.craftfx.image.TextureView;
 import com.igrium.craftfx.util.RaycastUtils;
 import com.igrium.craftfx.viewport.PrimaryViewport;
-import com.igrium.craftfx.viewport.SimpleKeyboardMovementController;
+import com.igrium.craftfx.viewport.SimpleKeyboardInputController;
 import com.igrium.craftfx.application.ApplicationType;
 
 import javafx.application.Application;
@@ -28,7 +27,7 @@ public class TestApplication extends CraftApplication {
 
     private final Logger LOGGER = LogManager.getLogger();
     private PrimaryViewport viewport;
-    private SimpleKeyboardMovementController<PrimaryViewport> controller;
+    private SimpleKeyboardInputController<PrimaryViewport> controller;
 
     public TestApplication(ApplicationType<?> type, MinecraftClient client) {
         super(type, client);
@@ -48,8 +47,7 @@ public class TestApplication extends CraftApplication {
         viewport = new PrimaryViewport();
         root.getChildren().add(viewport);
                 
-        MovementHandler movementHandler = SimpleKeyboardMovementController.setupMovementHandler();
-        controller = new SimpleKeyboardMovementController<>(viewport, movementHandler);
+        controller = new SimpleKeyboardInputController<>(viewport);
 
         TextureView texture = new TextureView(new Identifier("textures/entity/zombie/zombie.png"));
 

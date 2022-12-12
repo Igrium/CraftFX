@@ -17,7 +17,17 @@ public abstract class InputController<T extends EngineViewport, M extends Moveme
         initListeners(viewport);
     }
 
+    /**
+     * Initialize JavaFX listeners.
+     * @param viewport The viewport to use.
+     */
     protected abstract void initListeners(T viewport);
+
+    /**
+     * Called every frame on the Minecraft client thread.
+     * @param delta The number of milliseconds since the last tick.
+     */
+    public abstract void tick(long delta);
 
     public final T getViewport() {
         return viewport;

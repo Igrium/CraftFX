@@ -1,5 +1,9 @@
 package com.igrium.craftfx.engine;
 
+import org.jetbrains.annotations.Nullable;
+
+import com.igrium.craftfx.viewport.InputController;
+
 import net.minecraft.util.math.Vec3d;
 
 /**
@@ -37,7 +41,22 @@ public interface MovementHandler {
     void setYaw(float yaw);
     void changeLookDirection(double dx, double dy);
 
+    default void setRotation(float yaw, float pitch) {
+        setYaw(yaw);
+        setPitch(pitch);
+    }
+
     Vec3d getPos();
     float getPitch();
     float getYaw();
+
+    /**
+     * Attach a movement controller to this handler. The controllers
+     * <code>tick()</code> function should be called every frame the handler is
+     * active after this is called.
+     * 
+     * @param controller The controller to use. <code>null</code> to clear the
+     *                   controller.
+     */
+    void setController(@Nullable InputController<?, ?> controller);
 }
