@@ -51,6 +51,7 @@ public class StandardInputController<T extends EngineViewport> extends InputCont
             throw new IllegalArgumentException("The supplied movement handler must support arbitrary movement.");
         }
         fpv = new FirstPersonController(movementHandler::getPitch, movementHandler::getYaw);
+        putKeybinds(Keybinds.DEFAULTS);
     }
 
     /**
@@ -85,12 +86,14 @@ public class StandardInputController<T extends EngineViewport> extends InputCont
     protected void initNavigationEvents(T viewport) {
         viewport.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             if (!isNavigating) return;
-            if (e.getCode() == KeyCode.W) fpv.pressingForward = true;
-            else if (e.getCode() == KeyCode.A) fpv.pressingLeft = true;
-            else if (e.getCode() == KeyCode.S) fpv.pressingBackward = true;
-            else if (e.getCode() == KeyCode.D) fpv.pressingRight = true;
-            else if (e.getCode() == KeyCode.SPACE) fpv.pressingUp = true;
-            else if (e.getCode() == KeyCode.SHIFT) fpv.pressingDown = true;
+
+            KeyCode code = e.getCode();
+            if (isKeybind(code, Keybinds.FORWARD)) fpv.pressingForward = true;
+            else if (isKeybind(code, Keybinds.BACK)) fpv.pressingBackward = true;
+            else if (isKeybind(code, Keybinds.LEFT)) fpv.pressingLeft = true;
+            else if (isKeybind(code, Keybinds.RIGHT)) fpv.pressingRight = true;
+            else if (isKeybind(code, Keybinds.UP)) fpv.pressingUp = true;
+            else if (isKeybind(code, Keybinds.DOWN)) fpv.pressingDown = true;
             else return;
 
             e.consume();
@@ -99,12 +102,14 @@ public class StandardInputController<T extends EngineViewport> extends InputCont
 
         viewport.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
             if (!isNavigating) return;
-            if (e.getCode() == KeyCode.W) fpv.pressingForward = false;
-            else if (e.getCode() == KeyCode.A) fpv.pressingLeft = false;
-            else if (e.getCode() == KeyCode.S) fpv.pressingBackward = false;
-            else if (e.getCode() == KeyCode.D) fpv.pressingRight = false;
-            else if (e.getCode() == KeyCode.SPACE) fpv.pressingUp = false;
-            else if (e.getCode() == KeyCode.SHIFT) fpv.pressingDown = false;
+
+            KeyCode code = e.getCode();
+            if (isKeybind(code, Keybinds.FORWARD)) fpv.pressingForward = false;
+            else if (isKeybind(code, Keybinds.BACK)) fpv.pressingBackward = false;
+            else if (isKeybind(code, Keybinds.LEFT)) fpv.pressingLeft = false;
+            else if (isKeybind(code, Keybinds.RIGHT)) fpv.pressingRight = false;
+            else if (isKeybind(code, Keybinds.UP)) fpv.pressingUp = false;
+            else if (isKeybind(code, Keybinds.DOWN)) fpv.pressingDown = false;
             else return;
 
             e.consume();

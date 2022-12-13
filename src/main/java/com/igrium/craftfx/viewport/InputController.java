@@ -1,11 +1,17 @@
 package com.igrium.craftfx.viewport;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 import com.igrium.craftfx.CraftFX;
 import com.igrium.craftfx.engine.MovementHandler;
 
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.minecraft.util.Identifier;
 
 /**
  * Handles keystrokes on an engine viewport and translating them to the engine.
@@ -13,6 +19,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 public abstract class InputController<T extends EngineViewport, M extends MovementHandler> implements AutoCloseable, WorldRenderEvents.Start {
     protected final T viewport;
     protected final M movementHandler;
+    
+    protected final Map<KeyCode, Identifier> keybinds = new HashMap<>();
 
     public InputController(T viewport, M movementHandler) {
         this.viewport = viewport;
@@ -43,6 +51,24 @@ public abstract class InputController<T extends EngineViewport, M extends Moveme
 
     public Scene getScene() {
         return getViewport().getScene();
+    }
+
+    public final Map<KeyCode, Identifier> getKeybinds() {
+        return keybinds;
+    }
+
+    protected boolean isKeybind(KeyCode key, Identifier bind) {
+        return Objects.equals(keybinds.get(key), bind);
+    }
+
+    /**
+     * Set the keybinds of this controller. Shortcut for
+     * <code>getKeybinds.putAll()</code>.
+     * 
+     * @param keybinds The new keybinds.
+     */
+    public void putKeybinds(Map<KeyCode, Identifier> keybinds) {
+        this.keybinds.putAll(keybinds);
     }
 
     private long lastTick;

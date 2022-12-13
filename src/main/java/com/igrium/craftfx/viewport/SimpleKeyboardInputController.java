@@ -48,6 +48,7 @@ public class SimpleKeyboardInputController<T extends EngineViewport> extends Inp
      */
     public SimpleKeyboardInputController(T viewport, MovementHandler movementHandler) {
         super(viewport, movementHandler);
+        putKeybinds(Keybinds.DEFAULTS);
     }
 
     /**
@@ -64,12 +65,13 @@ public class SimpleKeyboardInputController<T extends EngineViewport> extends Inp
         viewport.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
             if (!isNavigating) return;
 
-            if (e.getCode() == KeyCode.W) pressingForward = true;
-            else if (e.getCode() == KeyCode.A) pressingLeft = true;
-            else if (e.getCode() == KeyCode.S) pressingBack = true;
-            else if (e.getCode() == KeyCode.D) pressingRight = true;
-            else if (e.getCode() == KeyCode.SHIFT) pressingSneak = true;
-            else if (e.getCode() == KeyCode.SPACE) pressingJump = true;
+            KeyCode code = e.getCode();
+            if (isKeybind(code, Keybinds.FORWARD)) pressingForward = true;
+            else if (isKeybind(code, Keybinds.BACK)) pressingBack = true;
+            else if (isKeybind(code, Keybinds.LEFT)) pressingLeft = true;
+            else if (isKeybind(code, Keybinds.RIGHT)) pressingRight = true;
+            else if (isKeybind(code, Keybinds.UP)) pressingJump = true;
+            else if (isKeybind(code, Keybinds.DOWN)) pressingSneak = true;
             else return;
 
             e.consume();
@@ -79,13 +81,15 @@ public class SimpleKeyboardInputController<T extends EngineViewport> extends Inp
         viewport.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
             if (!isNavigating) return;
 
-            if (e.getCode() == KeyCode.W) pressingForward = false;
-            else if (e.getCode() == KeyCode.A) pressingLeft = false;
-            else if (e.getCode() == KeyCode.S) pressingBack = false;
-            else if (e.getCode() == KeyCode.D) pressingRight = false;
-            else if (e.getCode() == KeyCode.SHIFT) pressingSneak = false;
-            else if (e.getCode() == KeyCode.SPACE) pressingJump = false;
+            KeyCode code = e.getCode();
+            if (isKeybind(code, Keybinds.FORWARD)) pressingForward = false;
+            else if (isKeybind(code, Keybinds.BACK)) pressingBack = false;
+            else if (isKeybind(code, Keybinds.LEFT)) pressingLeft = false;
+            else if (isKeybind(code, Keybinds.RIGHT)) pressingRight = false;
+            else if (isKeybind(code, Keybinds.UP)) pressingJump = false;
+            else if (isKeybind(code, Keybinds.DOWN)) pressingSneak = false;
             else return;
+
             e.consume();
             updateKeyboard();
         });
