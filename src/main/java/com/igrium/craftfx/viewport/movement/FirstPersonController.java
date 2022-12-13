@@ -1,4 +1,4 @@
-package com.igrium.craftfx.viewport;
+package com.igrium.craftfx.viewport.movement;
 
 import java.util.function.Supplier;
 
@@ -7,6 +7,7 @@ import net.minecraft.util.math.Vec3d;
 
 /**
  * A simple, reusable class that manages the inner-workings of first-person flight controls.
+ * @see OrbitController
  */
 public class FirstPersonController {
     private double speed = 10;
