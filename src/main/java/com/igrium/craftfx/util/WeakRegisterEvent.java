@@ -18,10 +18,12 @@ import net.fabricmc.fabric.api.event.Event;
  */
 public class WeakRegisterEvent<T> {
 
-    protected final Set<T> listeners = Collections.newSetFromMap(new WeakHashMap<>());
+    protected final Set<T> listeners = Collections.synchronizedSet(
+            Collections.newSetFromMap(
+                    new WeakHashMap<>()));
     
     protected final Event<T> baseEvent;
-    private T listener;
+    private final T listener;
 
     /**
      * Create a weak register event.
