@@ -80,7 +80,7 @@ public class StandardInputController<T extends EngineViewport> extends InputCont
         viewport.addEventFilter(MouseEvent.MOUSE_MOVED, this::handleMouseMove);
         viewport.addEventFilter(MouseEvent.MOUSE_DRAGGED, this::handleMouseMove);
 
-        initMovementEvents(viewport);
+        // initMovementEvents(viewport);
         initNavigationEvents(viewport);
     }
     

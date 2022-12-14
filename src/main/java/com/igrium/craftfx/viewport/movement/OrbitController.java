@@ -6,10 +6,7 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import com.igrium.craftfx.util.MathUtils;
 
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
 
 /**
  * A simple, re-usable class that manages orbit/pan/zoom controls of a viewport.
@@ -69,7 +66,7 @@ public class OrbitController extends MouseMovementController {
 
         // Convert to polar coordinates
 
-        Vec3d localPos = currentPos.subtract(center);
+        // Vec3d localPos = currentPos.subtract(center);
         double polar = Math.toRadians(pitchSupplier.get());
         double azimuth = Math.toRadians(yawSupplier.get());
         // double angle = Math.atan2(localPos.z, -localPos.x);
