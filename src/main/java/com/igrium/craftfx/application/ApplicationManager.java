@@ -55,7 +55,7 @@ public final class ApplicationManager {
      * @throws IllegalArgumentException If the application type is not registered.
      * @throws IllegalStateException If the application is already running.
      */
-    public CraftApplication launch(ApplicationType<?> type) throws IllegalArgumentException, IllegalStateException {
+    public <T extends CraftApplication> T launch(ApplicationType<T> type) throws IllegalArgumentException, IllegalStateException {
         if (!ApplicationType.REGISTRY.inverse().containsKey(type)) {
             throw new IllegalArgumentException("Application type is not registered!");
         }
@@ -66,13 +66,15 @@ public final class ApplicationManager {
 
         MinecraftClient client = MinecraftClient.getInstance();
 
-        CraftApplication application = type.create(client);
+        T application = type.create(client);
         applications.put(type, application);
         
         // Stop Minecraft from pausing
         pauseCache = client.options.pauseOnLostFocus;
         client.options.pauseOnLostFocus = false;
 
+        application.setup();
+        
         RootApplication root = RootApplication.launchJFX();
         Platform.runLater(() -> {
             Stage stage = new Stage();
@@ -97,5 +99,24 @@ public final class ApplicationManager {
         });
         
         return application;
+    }
+
+    /**
+     * Check if a particular application is running.
+     * @param type The application type.
+     * @return Is it running?
+     */
+    public boolean isRunning(ApplicationType<?> type) {
+        return applications.containsKey(type);
+    }
+
+    /**
+     * Get the running instance of an application of a given type.
+     * @param type The application type.
+     * @return The instance, or an empty optional if it is not running.
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends CraftApplication> Optional<T> getAppInstance(ApplicationType<T> type) {
+        return Optional.ofNullable((T) applications.get(type));
     }
 }

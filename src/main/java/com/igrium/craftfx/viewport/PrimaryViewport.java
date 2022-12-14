@@ -14,7 +14,12 @@ public class PrimaryViewport extends EngineViewport {
 
     protected void update() {
         boolean visible = visibleProperty().get() && parentProperty().get() != null;
-        PrimaryViewportProvider provider = PrimaryViewportProvider.getInstance();
+        PrimaryViewportProvider provider;
+        try {
+            provider = PrimaryViewportProvider.getInstance();
+        } catch (NoClassDefFoundError e) { // So it plays nicely with SceneBuilder
+            return;
+        }
 
         if (visible) {
             setViewportProvider(provider);

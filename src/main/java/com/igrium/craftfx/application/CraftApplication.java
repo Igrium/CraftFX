@@ -36,7 +36,7 @@ public abstract class CraftApplication {
     /**
      * Pre-initialize this application. <b>Internal use only</b>
      */
-    public final void init(Stage primaryStage, Application parent) {
+    final void init(Stage primaryStage, Application parent) {
         this.stage = primaryStage;
         this.parent = parent;
     }
@@ -81,8 +81,14 @@ public abstract class CraftApplication {
     }
 
     /**
-     * Called after this application has been closed. Called on the JavaFX thread.
+     * Called on the JavaFX thread after this application has been closed.
      * @throws Exception If something goes wrong cleaning up.
      */
-    protected void onClosed() throws Exception {}
+    protected abstract void onClosed();
+
+    /**
+     * Called on the Minecraft thread right before JavaFX is launched. Use to
+     * implement any game setup code required for the application.
+     */
+    protected void setup() {};
 }
