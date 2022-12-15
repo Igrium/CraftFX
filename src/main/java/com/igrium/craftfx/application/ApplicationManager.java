@@ -3,6 +3,9 @@ package com.igrium.craftfx.application;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
+
+import org.jetbrains.annotations.Nullable;
 
 import com.igrium.craftfx.CraftFX;
 
@@ -49,13 +52,32 @@ public final class ApplicationManager {
     }
 
     /**
-     * Launch a new application. Blocks until JavaFX is initialized and the application has started.
-     * @param type The application type. 
+     * Launch a new application. Blocks until JavaFX is initialized and the
+     * application has started.
+     * 
+     * @param type The application type.
      * @return The application instance.
      * @throws IllegalArgumentException If the application type is not registered.
-     * @throws IllegalStateException If the application is already running.
+     * @throws IllegalStateException    If the application is already running.
+     * @see #launch(ApplicationType, Consumer)
      */
-    public <T extends CraftApplication> T launch(ApplicationType<T> type) throws IllegalArgumentException, IllegalStateException {
+    public final <T extends CraftApplication> T launch(ApplicationType<T> type) {
+        return launch(type, null);
+    }
+
+    /**
+     * Launch a new application. Blocks until JavaFX is initialized and the
+     * application has started.
+     * 
+     * @param type        The application type.
+     * @param initializer A function that's called on the instantiated application
+     *                    <i>before</i> it's passed to JavaFX.
+     * @return The application instance.
+     * @throws IllegalArgumentException If the application type is not registered.
+     * @throws IllegalStateException    If the application is already running.
+     * @see #launch(ApplicationType)
+     */
+    public <T extends CraftApplication> T launch(ApplicationType<T> type, @Nullable Consumer<T> initializer) throws IllegalArgumentException, IllegalStateException {
         if (!ApplicationType.REGISTRY.inverse().containsKey(type)) {
             throw new IllegalArgumentException("Application type is not registered!");
         }
@@ -67,6 +89,8 @@ public final class ApplicationManager {
         MinecraftClient client = MinecraftClient.getInstance();
 
         T application = type.create(client);
+        if (initializer != null) initializer.accept(application);
+
         applications.put(type, application);
         
         // Stop Minecraft from pausing
