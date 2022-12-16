@@ -1,5 +1,8 @@
 package com.igrium.craftfx.engine;
 
+import java.util.Optional;
+
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.GameOptions;
@@ -119,5 +122,18 @@ public class PlayerMovementHandler extends KeyboardInput implements MovementHand
         if (val > 1f) return 1f;
         if (val < -1f) return -1f;
         return val;
+    }
+
+    /**
+     * Create and setup a movement handler on the local player.
+     * @return The movement handler.
+     */
+    public static MutablePlayerMovementHandler<PlayerMovementHandler> createDefaultSimple() {
+        MinecraftClient client = MinecraftClient.getInstance();
+        return new MutablePlayerMovementHandler<>(() -> client.player, player -> {
+            PlayerMovementHandler handler = new PlayerMovementHandler(player, client.options);
+            client.execute(() -> player.input = handler);
+            return handler;
+        }, Optional.of(false));
     }
 }

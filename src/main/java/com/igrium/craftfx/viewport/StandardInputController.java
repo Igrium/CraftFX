@@ -71,7 +71,7 @@ public class StandardInputController<T extends EngineViewport> extends InputCont
      * @param viewport The viewport to use.
      */
     public StandardInputController(T viewport) {
-        this(viewport, ArbitraryPlayerMovementHandler.createDefault());
+        this(viewport, ArbitraryPlayerMovementHandler.createDefaultArbitrary());
     }
 
     @Override

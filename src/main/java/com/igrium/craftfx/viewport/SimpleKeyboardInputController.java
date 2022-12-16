@@ -10,9 +10,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.robot.Robot;
 import javafx.stage.Window;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.entity.Entity;
 
 /**
  * A simple movement controller for the primary viewport. This uses Minecraft's
@@ -56,7 +53,7 @@ public class SimpleKeyboardInputController<T extends EngineViewport> extends Inp
      * @param viewport The viewport to use.
      */
     public SimpleKeyboardInputController(T viewport) {
-        this(viewport, setupMovementHandler());
+        this(viewport, PlayerMovementHandler.createDefaultSimple());
     }
     
 
@@ -181,32 +178,6 @@ public class SimpleKeyboardInputController<T extends EngineViewport> extends Inp
         movementHandler.setSidewaysAmount(getMovementMultiplier(pressingLeft, pressingRight));
         movementHandler.setJumping(pressingJump);
         movementHandler.setSneaking(pressingSneak);
-    }
-
-    /**
-     * Setup a player movement handler for the local player.
-     * @return The movement handler.
-     * @throws IllegalStateException If the camera entity is not a player.
-     */
-    public static PlayerMovementHandler setupMovementHandler() throws IllegalStateException {
-        MinecraftClient client = MinecraftClient.getInstance();
-        Entity camera = client.getCameraEntity();
-        if (!(camera instanceof ClientPlayerEntity)) {
-            throw new IllegalStateException("Camera entity must be a player!");
-        }
-        ClientPlayerEntity player = (ClientPlayerEntity) camera;
-
-        if (player.input instanceof PlayerMovementHandler) {
-            return (PlayerMovementHandler) player.input;
-        }
-
-        PlayerMovementHandler handler = new PlayerMovementHandler(player, client.options);
-
-        client.execute(() -> {
-            player.input = handler;
-        });
-
-        return handler;
     }
 
     @Override
