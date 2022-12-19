@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.igrium.craftfx.application.ApplicationManager;
 import com.igrium.craftfx.engine.PrimaryViewportProvider;
+import com.igrium.craftfx.events.GameRenderEvents;
 import com.igrium.craftfx.util.RenderUtils;
 import com.igrium.craftfx.util.WeakRegisterEvent;
 
@@ -43,8 +44,8 @@ public class CraftFX implements ClientModInitializer {
     public void onInitializeClient() {
         instance = this;
         applicationManager = new ApplicationManager(this);
-
-        ClientTickEvents.START_CLIENT_TICK.register(client -> {
+        
+        GameRenderEvents.PRE_RENDER.register(tick -> {
             PrimaryViewportProvider.getInstance().pretick();
         });
 

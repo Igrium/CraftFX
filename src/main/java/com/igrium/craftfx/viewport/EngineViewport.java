@@ -10,11 +10,16 @@ import com.igrium.craftfx.engine.ViewportProvider;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.geometry.Insets;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelBuffer;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 
 /**
  * <p>
@@ -39,6 +44,8 @@ public class EngineViewport extends Region implements EngineViewportHandle, Clos
             if (oldVal != null) oldVal.removeHandle(this);
             if (newVal != null) newVal.addHandle(this);
         });
+
+        setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
     @Override
