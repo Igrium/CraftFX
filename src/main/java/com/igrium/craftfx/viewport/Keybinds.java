@@ -16,6 +16,7 @@ public final class Keybinds {
     public static final Identifier RIGHT = new Identifier("craftfx", "right");
     public static final Identifier UP = new Identifier("craftfx", "up");
     public static final Identifier DOWN = new Identifier("craftfx", "down");
+    public static final Identifier TOGGLE_NAVIGATE = new Identifier("craftfx", "toggle_navigate");
 
     /**
      * A map of keybinds that matches Minecraft's default control scheme.
@@ -26,5 +27,6 @@ public final class Keybinds {
             KeyCode.S, BACK,
             KeyCode.D, RIGHT,
             KeyCode.SPACE, UP,
-            KeyCode.SHIFT, DOWN);
+            KeyCode.SHIFT, DOWN,
+            KeyCode.Z, TOGGLE_NAVIGATE);
 }

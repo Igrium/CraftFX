@@ -127,6 +127,13 @@ public class StandardInputController<T extends EngineViewport> extends InputCont
 
     protected void initNavigationEvents(T viewport) {
         viewport.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+            if (isKeybind(e.getCode(), Keybinds.TOGGLE_NAVIGATE)) {
+                setNavigating(!isNavigating);
+                e.consume();
+            }
+        });
+
+        viewport.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             if (!isNavigating) return;
 
             KeyCode code = e.getCode();
