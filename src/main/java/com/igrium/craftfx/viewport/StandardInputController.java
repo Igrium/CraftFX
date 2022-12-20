@@ -186,6 +186,7 @@ public class StandardInputController<T extends EngineViewport> extends InputCont
         if (isNavigating) {
             getScene().setCursor(Cursor.NONE);
             setOrbiting(false);
+            viewport.requestFocus();
         } else {
             fpv.pressingLeft = false;
             fpv.pressingRight = false;
