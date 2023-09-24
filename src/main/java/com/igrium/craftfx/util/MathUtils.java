@@ -1,7 +1,9 @@
 package com.igrium.craftfx.util;
 
+import org.joml.Quaternionf;
+import org.joml.Quaternionfc;
+
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3d;
 
 /**
@@ -18,16 +20,16 @@ public final class MathUtils {
      * @return <code>dest</code>
      */
     // Note: I basically copied this from Joml. I have no idea what this math means.
-    public static Quaternion mulQuaternions(Quaternion left, Quaternion right, Quaternion dest) {
-        float lw = left.getW();
-        float lx = left.getX();
-        float ly = left.getY();
-        float lz = left.getZ();
+    public static Quaternionf mulQuaternions(Quaternionfc left, Quaternionfc right, Quaternionf dest) {
+        float lw = left.w();
+        float lx = left.x();
+        float ly = left.y();
+        float lz = left.z();
 
-        float rw = right.getW();
-        float rx = right.getX();
-        float ry = right.getY();
-        float rz = right.getZ();
+        float rw = right.w();
+        float rx = right.x();
+        float ry = right.y();
+        float rz = right.z();
 
         float x = Math.fma(lw, rx, Math.fma(lx, rw, Math.fma(ly, rz, -lz * ry)));
         float y = Math.fma(lw, ry, Math.fma(-lx, rz, Math.fma(ly, rw, lz * rx)));

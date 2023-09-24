@@ -1,9 +1,10 @@
 package com.igrium.craftfx.util;
 
+import org.joml.Matrix4f;
+
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Matrix4f;
 
 /**
  * A set of utility functions involving the rendering of the Minecraft game.
@@ -18,7 +19,8 @@ public final class RenderUtils {
      * Internal use only
      */
     public static void updateRenderContext(WorldRenderContext context) {
-        cameraProjection = context.projectionMatrix().copy();
+        // cameraProjection = context.projectionMatrix().copy();
+        context.projectionMatrix();
         camera = context.camera();
     }
 

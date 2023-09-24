@@ -3,11 +3,11 @@ package com.igrium.craftfx.viewport.movement;
 import java.util.function.Supplier;
 
 import org.apache.commons.lang3.tuple.Triple;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
 
 /**
  * A movement controller that uses mouse motion to perform orbit/pan/zoom movements.
@@ -37,14 +37,15 @@ public abstract class MouseMovementController {
     //     return new Vec3d(0, 0, 1).rotateX(pitchSupplier.get()).rotateY(yawSupplier.get());
     // }
 
-    protected Vec3f getCameraFacingVector() {
-        Vec3f vec = new Vec3f(0, 0, 1);
+    protected Vector3f getCameraFacingVector() {
+        Vector3f vec = new Vector3f(0, 0, 1);
         vec.rotate(getCameraRotation());
         return vec;
     }
 
-    protected Quaternion getCameraRotation() {
-        return Quaternion.fromEulerYxz(pitchSupplier.get() * MathHelper.RADIANS_PER_DEGREE,
+    protected Quaternionf getCameraRotation() {
+
+        return new Quaternionf().rotateYXZ(pitchSupplier.get() * MathHelper.RADIANS_PER_DEGREE,
                 yawSupplier.get() * MathHelper.RADIANS_PER_DEGREE, 0);
     }
 

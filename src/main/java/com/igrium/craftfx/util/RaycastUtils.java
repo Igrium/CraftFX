@@ -2,6 +2,9 @@ package com.igrium.craftfx.util;
 
 import java.util.function.Predicate;
 
+import org.joml.Matrix4f;
+import org.joml.Vector4f;
+
 import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileUtil;
@@ -9,9 +12,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vector4f;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.RaycastContext.FluidHandling;
 import net.minecraft.world.RaycastContext.ShapeType;
@@ -60,15 +61,16 @@ public final class RaycastUtils {
     public static Vec3d projectViewport(Camera camera, float x, float y, float width, float height, float distance) {
         Vector4f screenspace = new Vector4f(2 * x / width - 1, 2 * y / height - 1, -1, 1);
 
-        Matrix4f cameraProjection = RenderUtils.getCameraProjection().copy();
+        Matrix4f cameraProjection = new Matrix4f(RenderUtils.getCameraProjection());
         cameraProjection.invert();
 
-        screenspace.transform(cameraProjection);
-        screenspace.multiply(-distance); // Bandaid on ray that's broken for some reason.
+        // screenspace.transform(cameraProjection);
+        cameraProjection.transform(screenspace);
+        screenspace.mul(-distance); // Bandaid on ray that's broken for some reason.
         screenspace.rotate(camera.getRotation());
         screenspace.add((float) camera.getPos().x, (float) camera.getPos().y, (float) camera.getPos().z, 0);
 
-        return new Vec3d(screenspace.getX(), screenspace.getY(), screenspace.getZ());
+        return new Vec3d(screenspace.x(), screenspace.y(), screenspace.z());
     }
 
     /**
